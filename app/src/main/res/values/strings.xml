@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">My Application</string>
+    <string name="dummy_button">Red</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="button2">Random</string>
+    <string name="button3">Notify</string>
+
+</resources>
