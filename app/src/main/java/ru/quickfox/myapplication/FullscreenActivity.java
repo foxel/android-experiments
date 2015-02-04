@@ -10,6 +10,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -52,6 +53,7 @@ public class FullscreenActivity extends Activity {
      * The flags to pass to {@link SystemUiHider#getInstance}.
      */
     private static final int HIDER_FLAGS = SystemUiHider.FLAG_HIDE_NAVIGATION;
+    private static final String PREFS_NAME = "mainPrefs";
 
     /**
      * The instance of the {@link SystemUiHider} for this activity.
@@ -121,8 +123,6 @@ public class FullscreenActivity extends Activity {
             }
         });
 
-        final FrameLayout rootView = (FrameLayout) findViewById(R.id.frame_layout);
-
         final Random rnd = new Random();
 
         final View button1View = findViewById(R.id.dummy_button);
@@ -131,14 +131,14 @@ public class FullscreenActivity extends Activity {
         button1View.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                rootView.setBackgroundColor(0xffff0000);
+                setColor(0xffff0000);
             }
         });
         button2View.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 int color = 0xff000000 | rnd.nextInt();
-                rootView.setBackgroundColor(color);
+                setColor(color);
             }
         });
 
@@ -194,6 +194,28 @@ public class FullscreenActivity extends Activity {
         button1View.setOnTouchListener(mDelayHideTouchListener);
         button2View.setOnTouchListener(mDelayHideTouchListener);
         button3View.setOnTouchListener(mDelayHideTouchListener);
+        setColor();
+    }
+
+    protected void setColor(int color, boolean save) {
+        final FrameLayout rootView = (FrameLayout) findViewById(R.id.frame_layout);
+        rootView.setBackgroundColor(color);
+        if (save) {
+            SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putInt("color", color);
+            editor.apply();
+        }
+    }
+
+    protected void setColor(int color) {
+        setColor(color, true);
+    }
+
+    protected void setColor() {
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        int silent = settings.getInt("color", 0);
+        setColor(silent, false);
     }
 
     @Override
